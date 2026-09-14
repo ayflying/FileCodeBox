@@ -84,6 +84,29 @@ DEFAULT_CONFIG = {
     "showAdminAddr": 0,
     "robotsText": "User-agent: *\nDisallow: /",
     "trustedProxies": [],
+    # ---- P2P 直传（详见 docs/p2p-design.md §5）----
+    # 站点级总开关
+    "enableP2P": 1,
+    # 上传页勾选框默认状态
+    "p2pDefaultChecked": 1,
+    # P2P 单文件上限，服务端硬闸；不计入 storageLimit（见决策 D4/D9）
+    "p2pMaxSize": 2 * 1024**3,
+    # 是否允许流式中转兜底
+    "p2pRelayEnabled": 1,
+    # 单分享并发下载者上限
+    "p2pMaxPeers": 3,
+    # 发布端心跳超时秒数，超过即判离线
+    "p2pHeartbeatTimeout": 30,
+    # 无人在线的房间回收秒数
+    "p2pRoomTtl": 900,
+    # STUN 列表
+    "p2pStunUrls": ["stun:stun.l.google.com:19302"],
+    # TURN 列表（如 turn:your.host:3478）
+    "p2pTurnUrls": [],
+    # coturn static-auth-secret，仅服务端可见，绝不下发前端
+    "p2pTurnSecret": "",
+    # TURN 临时凭据有效期（秒）
+    "p2pTurnTtl": 7200,
 }
 
 

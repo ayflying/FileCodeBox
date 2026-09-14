@@ -16,6 +16,8 @@ from tortoise.contrib.fastapi import register_tortoise
 
 from apps.admin.views import admin_api
 from apps.base.models import KeyValue
+from apps.base.p2p import p2p_api
+from apps.base.p2p.config import apply_room_manager_config, build_public_p2p_config
 from apps.base.utils import ip_limit
 from apps.base.views import share_api, chunk_api, presign_api
 from core.config import (
@@ -57,6 +59,8 @@ def build_public_config() -> dict:
         "notify_content": settings.notify_content,
         "show_admin_address": normalize_public_flag(settings.showAdminAddr),
         "max_save_seconds": settings.max_save_seconds,
+        # P2P 直传：不含 p2pTurnSecret，TURN 凭据走 /p2p/ice 按需签发
+        **build_public_p2p_config(),
     }
 
 
@@ -764,6 +768,8 @@ async def load_config():
     ip_limit["upload"].count = settings.uploadCount
     ip_limit["login"].minutes = settings.loginMinute
     ip_limit["login"].count = settings.loginCount
+    # 站点配置变化后同步到 P2P 房间管理器
+    apply_room_manager_config()
 
 app = FastAPI(lifespan=lifespan, version=APP_VERSION)
 
@@ -807,6 +813,7 @@ app.include_router(chunk_api)
 app.include_router(presign_api)
 app.include_router(presign_api, prefix="/api")
 app.include_router(admin_api)
+app.include_router(p2p_api)
 
 
 @app.get("/setup", include_in_schema=False)

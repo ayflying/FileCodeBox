@@ -72,6 +72,9 @@ def _sync_ip_limits() -> None:
     ip_limit["upload"].count = settings.uploadCount
     ip_limit["login"].minutes = settings.loginMinute
     ip_limit["login"].count = settings.loginCount
+    # P2P 信令与上传共用同一组频率参数
+    ip_limit["p2p"].minutes = settings.uploadMinute
+    ip_limit["p2p"].count = settings.uploadCount
 
 
 async def refresh_settings() -> None:

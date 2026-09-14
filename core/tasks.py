@@ -15,6 +15,7 @@ from apps.base.models import (
     UploadChunk,
 )
 from apps.base.utils import ip_limit, get_chunk_file_path_name
+from apps.base.p2p.rooms import room_manager
 from core.config import refresh_settings
 from core.logger import logger
 from core.settings import settings, data_root
@@ -40,14 +41,20 @@ async def delete_expire_files():
                 Q(expired_at__lt=await get_now()) | Q(expired_count=0)
             ).all()
             for exp in expire_data:
-                try:
-                    await file_storage.delete_file(exp)
-                except Exception as e:
-                    logger.error(f"删除过期文件失败 code={exp.code}: {e}")
+                if exp.is_p2p:
+                    # P2P 分享不落盘，无文件可删，只需释放内存房间
+                    await room_manager.drop_room(exp.code)
+                else:
+                    try:
+                        await file_storage.delete_file(exp)
+                    except Exception as e:
+                        logger.error(f"删除过期文件失败 code={exp.code}: {e}")
                 try:
                     await exp.delete()
                 except Exception as e:
                     logger.error(f"删除记录失败 code={exp.code}: {e}")
+            # 回收无人连接的 P2P 空闲房间
+            await room_manager.reap_idle_rooms()
         except Exception as e:
             logger.error(e)
         finally:

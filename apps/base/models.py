@@ -28,6 +28,21 @@ class FileCodes(models.Model):
     file_hash = fields.CharField(max_length=64, null=True)
     is_chunked = fields.BooleanField(default=False)
     upload_id = fields.CharField(max_length=36, null=True)
+    # ---- P2P 直传（详见 docs/p2p-design.md §4.1）----
+    # P2P 记录中 file_path / uuid_file_name 留空，size 存文件真实大小供前端展示
+    is_p2p = fields.BooleanField(default=False)
+    # 发布端令牌哈希，原文仅发布者持有
+    p2p_token_hash = fields.CharField(max_length=64, null=True)
+    # online / offline / expired
+    p2p_status = fields.CharField(max_length=16, default="offline")
+    # 发布端最后心跳
+    p2p_last_seen = fields.DatetimeField(null=True)
+    # 成功完成传输的次数
+    p2p_served_count = fields.IntField(default=0)
+    # 累计传出字节
+    p2p_bytes_sent = fields.BigIntField(default=0)
+    # direct / relay
+    p2p_last_transport = fields.CharField(max_length=16, null=True)
 
     async def is_expired(self):
         if self.expired_at is None:

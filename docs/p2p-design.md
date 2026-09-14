@@ -372,3 +372,64 @@ max-port=65535
 
 - 前端开发期联调方式（本地 Vite dev server 直连本地后端，还是构建产物挂载）—— 进入 P4 前确定。
 - 是否把 P2P 传输统计写入 `usage_logs` 供后续分析 —— 待 D8 有数据后再评估。
+
+## 13. P1 落地记录（已完成）
+
+P1 范围：**WS 信令骨架 + 房间鉴权**。数据面（直连传输、流式中转）留待 P2/P3。
+
+### 13.1 代码结构
+
+| 文件 | 职责 |
+|------|------|
+| `apps/base/p2p/__init__.py` | 包入口，定义 `p2p_api = APIRouter(prefix="/p2p")` |
+| `apps/base/p2p/config.py` | 站点配置集中读取与归一化；`build_public_p2p_config()` 保证不下发 `p2pTurnSecret` |
+| `apps/base/p2p/tokens.py` | 发布令牌哈希与校验、coturn REST 临时凭据、ICE servers 组装 |
+| `apps/base/p2p/rooms.py` | 进程内房间表 + `SignalingRouter`（只产投递决策，不碰 WebSocket，可单测） |
+| `apps/base/p2p/store.py` | 房间状态落库（在线状态、累计统计、主动下线），心跳写库做 15s 节流 |
+| `apps/base/p2p/views.py` | REST 控制面：`/p2p/publish`、`/p2p/status/{code}`、`/p2p/unpublish`、`/p2p/ice` |
+| `apps/base/p2p/signaling.py` | WS 端点 `/p2p/signal/{code}`，只做连接生命周期与消息搬运 |
+| `apps/base/migrations/migrations_007.py` | 幂等增量迁移：7 个 P2P 列 + `is_p2p` 索引 |
+
+### 13.2 落地时的关键取舍
+
+- **`/p2p/publish` 不调用 `reserve_storage`**，不写 `file_path` / `uuid_file_name`，
+  只登记元数据（落实 D4）。因此该记录没有可删的文件。
+- **过期清理分支**：`core/tasks.py` 对 `is_p2p` 记录只调 `room_manager.drop_room()`，
+  不调 `file_storage.delete_file()`，避免对不存在的文件做删除。
+- **发布端重连顶替**：同一 code 的新发布者连接会顶替旧连接，旧连接收到 `replaced` 错误帧
+  并以 `4412` 关闭。这样刷新页面不会导致「房间被自己占满」。
+- **信令层的独立可测性**：`rooms.SignalingRouter` 只返回 `Delivery` 投递决策，
+  不直接操作 WebSocket，因此信令语义可以在没有网络的情况下完整单测。
+- **P1 二进制帧**返回 `relay_unavailable` 错误帧，明确告知数据面尚未启用，
+  不做「假装在传」的静默丢弃。
+
+### 13.3 关闭码约定
+
+| 关闭码 | 含义 |
+|--------|------|
+| `4400` | role 参数不合法 |
+| `4401` | 发布令牌无效 |
+| `4404` | 取件码不存在 |
+| `4409` | 并发下载者已达上限 |
+| `4410` | 分享已失效 |
+| `4412` | 发布端已在新的连接恢复服务，本连接被顶替 |
+| `4429` | 触发 IP 限流 |
+| `4503` | 站点未启用 P2P 直传 |
+
+失败时统一「先 `accept()` 再回 `error` 帧、随后关闭」，让前端能拿到具体原因，
+而不是只看到无上下文的握手失败。
+
+### 13.4 验证结果
+
+| 层级 | 脚本 | 结果 |
+|------|------|------|
+| 单元测试 | `tests/test_p2p_signaling.py` | 55 项全过（令牌、ICE 组装、配置归一化、房间生命周期、信令转发决策、迁移幂等） |
+| 协议层端到端 | `tests/manual/p2p_e2e_signal.py` | 52 项全过（含鉴权负例与落库断言） |
+| 浏览器侧验收 | `tests/manual/p2p_browser_acceptance.py` | 19 项全过（真实 WebRTC 协商成功、DataChannel 真实数据送达） |
+
+验收标准「两个浏览器同一 code 能建立 `RTCPeerConnection` 并进入 `connected`」已达成：
+两个独立浏览器上下文进入 `connectionState=connected`，DataChannel 双向 `open`，
+发布端发出的探针数据经 P2P 通道在下载端收到，事件流可见完整 offer / answer / ICE 往返。
+
+> 复现方式见 `tests/manual/README.md`。该文档另记录了「未初始化时 428 探测」
+> 与「Windows 保留端口区间」两个已踩过的坑。

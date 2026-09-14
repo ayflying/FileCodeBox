@@ -45,24 +45,39 @@ def _get_forwarded_for_ip(header_value: str, fallback_ip: str) -> str:
     return forwarded_chain[0]
 
 
-def get_client_ip(request: Request) -> str:
-    client_host = request.client.host if request.client else "unknown"
-    if not _is_trusted_proxy(client_host):
-        return client_host
+def resolve_client_ip(
+    client_host: str,
+    forwarded_for: Union[str, None] = None,
+    real_ip: Union[str, None] = None,
+) -> str:
+    """按可信代理白名单解析真实客户端 IP。
 
-    forwarded_for = request.headers.get("X-Forwarded-For")
+    HTTP 与 WebSocket 共用：只有直连来源是可信代理时，才采信转发头。
+    """
+    host = client_host or "unknown"
+    if not _is_trusted_proxy(host):
+        return host
+
     if forwarded_for:
-        return _get_forwarded_for_ip(forwarded_for, client_host)
+        return _get_forwarded_for_ip(forwarded_for, host)
 
-    real_ip = request.headers.get("X-Real-IP")
     if real_ip:
         try:
             ip_address(real_ip)
         except ValueError:
-            return client_host
+            return host
         return real_ip
 
-    return client_host
+    return host
+
+
+def get_client_ip(request: Request) -> str:
+    client_host = request.client.host if request.client else "unknown"
+    return resolve_client_ip(
+        client_host,
+        request.headers.get("X-Forwarded-For"),
+        request.headers.get("X-Real-IP"),
+    )
 
 
 class IPRateLimit:

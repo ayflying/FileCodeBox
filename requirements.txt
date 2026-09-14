@@ -5,5 +5,7 @@ fastapi==0.139.2
 starlette==1.3.1
 pydantic==2.12.5
 uvicorn==0.51.0
+# uvicorn 的 WebSocket 协议实现依赖（P2P 信令必需），非 [standard] 安装不会自带
+websockets==17.1
 tortoise-orm==0.25.3
 python-multipart==0.0.32

@@ -138,4 +138,6 @@ ip_limit = {
     "metadata": IPRateLimit(count=settings.errorCount, minutes=settings.errorMinute),
     "upload": IPRateLimit(count=settings.uploadCount, minutes=settings.uploadMinute),
     "login": IPRateLimit(count=settings.loginCount, minutes=settings.loginMinute),
+    # P2P 信令鉴权失败/房间探测限流，参数与上传限流保持一致
+    "p2p": IPRateLimit(count=settings.uploadCount, minutes=settings.uploadMinute),
 }

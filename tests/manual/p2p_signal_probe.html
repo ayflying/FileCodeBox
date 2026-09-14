@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>P2P 信令探针</title>
+<style>
+  body { font-family: -apple-system, "Segoe UI", sans-serif; background:#111318; color:#e6e6e6; margin:0; padding:16px; }
+  h1 { font-size:16px; margin:0 0 10px; }
+  .row { display:flex; gap:10px; align-items:center; margin:6px 0; flex-wrap:wrap; }
+  .badge { padding:3px 10px; border-radius:999px; font-size:12px; font-weight:700; background:#333; }
+  .ok { background:#1b5e20; color:#c8e6c9; }
+  .bad { background:#7f1d1d; color:#fecaca; }
+  .warn { background:#78350f; color:#fde68a; }
+  code { background:#1e222b; padding:2px 6px; border-radius:4px; font-size:12px; }
+  #log { margin-top:12px; background:#0b0d11; border:1px solid #22262f; border-radius:8px; padding:10px; height:320px; overflow:auto; font-family:Consolas,monospace; font-size:12px; line-height:1.6; }
+  .t { color:#7dd3fc; } .e { color:#fca5a5; } .g { color:#86efac; }
+</style>
+</head>
+<body>
+<h1>P2P 信令探针 <span id="roleBadge" class="badge">-</span></h1>
+<div class="row">
+  <span>连接状态</span><span id="pcState" class="badge">-</span>
+  <span>信令</span><span id="wsState" class="badge">-</span>
+  <span>数据通道</span><span id="dcState" class="badge">-</span>
+  <span>peer</span><code id="peerId">-</code>
+  <span>远端</span><code id="remotePeer">-</code>
+</div>
+<div class="row" id="shareRow" style="display:none">
+  <span>取件码</span><code id="shareCode">-</code>
+  <span>复制给下载端：</span><code id="shareUrl">-</code>
+</div>
+<div id="log"></div>
+<script>
+const params = new URLSearchParams(location.search);
+const ROLE = params.get("role") || "downloader";
+const WS_BASE = params.get("ws") || `${location.protocol === "https:" ? "wss" : "ws"}://${location.hostname}:8899`;
+const API_BASE = params.get("api") || `${location.protocol}//${location.hostname}:8899`;
+let CODE = params.get("code") || "";
+const TOKEN = params.get("token") || "";
+
+const probe = window.__probe = {
+  role: ROLE, code: CODE, peerId: null, remotePeerId: null,
+  signaling: "init", connection: "init", dataChannel: "init",
+  sentPayload: null, receivedPayloads: [], errors: [], events: [],
+};
+setInterval(() => { probe.snapshot = { ...probe, events: probe.events.slice(-40) }; }, 200);
+
+const $ = id => document.getElementById(id);
+function log(msg, cls = "") {
+  const line = document.createElement("div");
+  line.className = cls;
+  line.textContent = `${new Date().toLocaleTimeString()} ${msg}`;
+  $("log").appendChild(line);
+  $("log").scrollTop = $("log").scrollHeight;
+  probe.events.push({ t: Date.now(), msg, cls });
+}
+function setBadge(id, text, cls) { const el = $(id); el.textContent = text; el.className = "badge " + (cls || ""); }
+function fail(where, err) { probe.errors.push(`${where}: ${err}`); log(`ERROR ${where}: ${err}`, "e"); }
+
+let ws = null, pc = null, dataChannel = null, remotePeerId = null;
+const pendingCandidates = [];
+
+async function fetchIceServers() {
+  try {
+    const resp = await fetch(`${API_BASE}/p2p/ice`, { method: "POST" });
+    const body = await resp.json();
+    return (body.detail && body.detail.ice_servers) || [];
+  } catch (err) { fail("fetchIceServers", err); return []; }
+}
+
+async function publish() {
+  const resp = await fetch(`${API_BASE}/p2p/publish`, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ file_name: "probe-roundtrip.bin", file_size: 1048576, expire_value: 1, expire_style: "day" }),
+  });
+  const body = await resp.json();
+  if (!body.detail || !body.detail.code) throw new Error("publish 失败: " + JSON.stringify(body));
+  CODE = body.detail.code;
+  probe.code = CODE;
+  $("shareRow").style.display = "flex";
+  $("shareCode").textContent = CODE;
+  const dlUrl = `${location.origin}${location.pathname}?role=downloader&code=${CODE}&ws=${encodeURIComponent(WS_BASE)}&api=${encodeURIComponent(API_BASE)}`;
+  $("shareUrl").textContent = dlUrl;
+  probe.downloaderUrl = dlUrl;
+  log(`publish 成功 code=${CODE}`, "g");
+  return body.detail.publish_token;
+}
+
+function createPeerConnection(iceServers) {
+  pc = new RTCPeerConnection({ iceServers });
+  probe.iceServers = iceServers;
+
+  pc.onicecandidate = ev => {
+    if (ev.candidate && ws && ws.readyState === WebSocket.OPEN && remotePeerId) {
+      ws.send(JSON.stringify({ t: "ice", peer: remotePeerId, candidate: ev.candidate.toJSON() }));
+      log(`→ ice ${ev.candidate.type || ""} ${String(ev.candidate.candidate).slice(0, 48)}`);
+    }
+  };
+  pc.oniceconnectionstatechange = () => log(`iceConnectionState=${pc.iceConnectionState}`);
+  pc.onconnectionstatechange = () => {
+    probe.connection = pc.connectionState;
+    const cls = pc.connectionState === "connected" ? "ok" : (pc.connectionState === "failed" ? "bad" : "warn");
+    setBadge("pcState", pc.connectionState, cls);
+    log(`connectionState=${pc.connectionState}`, pc.connectionState === "connected" ? "g" : "");
+  };
+  return pc;
+}
+
+function wireDataChannel(channel) {
+  dataChannel = channel;
+  channel.onopen = () => { probe.dataChannel = "open"; setBadge("dcState", "open", "ok"); log("DataChannel 已打开", "g"); };
+  channel.onclose = () => { probe.dataChannel = "closed"; setBadge("dcState", "closed", "warn"); log("DataChannel 已关闭"); };
+  channel.onerror = ev => fail("datachannel", ev.message || String(ev));
+  channel.onmessage = ev => {
+    probe.receivedPayloads.push(ev.data);
+    log(`← 收到数据 ${ev.data}`, "g");
+  };
+}
+
+async function handleSignal(msg) {
+  if (msg.from) log(`← ${msg.t} from=${msg.from}`);
+  else log(`← ${msg.t}`);
+
+  switch (msg.t) {
+    case "room":
+      probe.peerId = msg.peer;
+      $("peerId").textContent = msg.peer;
+      log(`room: publisher_online=${msg.publisher_online} downloaders=${msg.downloaders}`, "g");
+      if (ROLE === "publisher") {
+        log("等待下载端接入…");
+      }
+      break;
+    case "peer-join":
+      remotePeerId = msg.peer;
+      probe.remotePeerId = msg.peer;
+      $("remotePeer").textContent = msg.peer;
+      await startPublisherOffer();
+      break;
+    case "offer":
+      remotePeerId = msg.from;
+      probe.remotePeerId = msg.from;
+      $("remotePeer").textContent = msg.from;
+      await pc.setRemoteDescription(new RTCSessionDescription(msg.sdp));
+      await flushCandidates();
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+      ws.send(JSON.stringify({ t: "answer", peer: msg.from, sdp: { type: answer.type, sdp: answer.sdp } }));
+      log("→ answer");
+      break;
+    case "answer":
+      await pc.setRemoteDescription(new RTCSessionDescription(msg.sdp));
+      await flushCandidates();
+      break;
+    case "ice":
+      if (pc && pc.remoteDescription && pc.remoteDescription.type) {
+        try { await pc.addIceCandidate(new RTCIceCandidate(msg.candidate)); log("+ 远端 ice 已加入"); }
+        catch (err) { fail("addIceCandidate", err); }
+      } else {
+        pendingCandidates.push(msg.candidate);
+        log(`· 暂存 ice（远端描述未就绪，队列 ${pendingCandidates.length}）`);
+      }
+      break;
+    case "publisher-online":
+      log("发布者已上线", "g");
+      break;
+    case "publisher-offline":
+      log("发布者已离线", "e");
+      break;
+    case "peer-done":
+      log(`对端完成 ${msg.bytes} 字节`);
+      break;
+    case "pong": break;
+    case "error":
+      probe.errors.push(`server: ${msg.code} ${msg.message}`);
+      log(`error ${msg.code}: ${msg.message}`, "e");
+      break;
+    default:
+      log(`未处理信令 ${msg.t}`);
+  }
+}
+
+async function flushCandidates() {
+  while (pendingCandidates.length) {
+    const candidate = pendingCandidates.shift();
+    try { await pc.addIceCandidate(new RTCIceCandidate(candidate)); } catch (err) { fail("flushCandidates", err); }
+  }
+  if (probe._flushed === undefined) probe._flushed = true;
+}
+
+async function startPublisherOffer() {
+  const channel = pc.createDataChannel("file");
+  wireDataChannel(channel);
+  const offer = await pc.createOffer();
+  await pc.setLocalDescription(offer);
+  ws.send(JSON.stringify({ t: "offer", peer: remotePeerId, sdp: { type: offer.type, sdp: offer.sdp } }));
+  log("→ offer");
+}
+
+function connectSignaling(token) {
+  const qs = new URLSearchParams({ role: ROLE });
+  if (token) qs.set("token", token);
+  const url = `${WS_BASE}/p2p/signal/${CODE}?${qs.toString()}`;
+  ws = new WebSocket(url);
+  ws.onopen = () => { probe.signaling = "open"; setBadge("wsState", "open", "ok"); log(`信令已连接 ${url}`, "g"); };
+  ws.onclose = ev => {
+    probe.signaling = "closed:" + ev.code;
+    setBadge("wsState", `closed ${ev.code}`, ev.code === 1000 ? "warn" : "bad");
+    log(`信令关闭 code=${ev.code} reason=${ev.reason || ""}`, ev.code === 1000 ? "" : "e");
+  };
+  ws.onerror = () => fail("websocket", "连接错误");
+  ws.onmessage = ev => {
+    let msg; try { msg = JSON.parse(ev.data); } catch { return fail("parse", ev.data); }
+    handleSignal(msg).catch(err => fail("handleSignal", err));
+  };
+}
+
+// 心跳：让服务端维持「在线」判定，并验证节流写库
+setInterval(() => {
+  if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ t: "ping" }));
+}, 5000);
+
+// 供自动化调用：连上数据通道后发一条真实数据，证明通道可用
+window.__sendProbe = () => {
+  if (!dataChannel || dataChannel.readyState !== "open") return "channel-not-open";
+  const payload = "probe-payload-" + Math.random().toString(36).slice(2, 10);
+  probe.sentPayload = payload;
+  dataChannel.send(payload);
+  log(`→ 发送数据 ${payload}`, "g");
+  return payload;
+};
+window.__publishAgain = async () => { const t = await publish(); return { code: CODE, token: t }; };
+window.__sendDone = (bytes) => { ws.send(JSON.stringify({ t: "done", peer: remotePeerId, bytes, mode: "direct" })); };
+
+(async () => {
+  setBadge("roleBadge", ROLE, ROLE === "publisher" ? "ok" : "warn");
+  try {
+    const iceServers = await fetchIceServers();
+    log(`ICE servers: ${JSON.stringify(iceServers)}`);
+    createPeerConnection(iceServers);
+    let token = TOKEN;
+    if (ROLE === "publisher" && !token) token = await publish();
+    if (!CODE) throw new Error("缺少 code 参数");
+    if (ROLE === "downloader") pc.ondatachannel = ev => { log("收到远端 DataChannel"); wireDataChannel(ev.channel); };
+    connectSignaling(token);
+  } catch (err) { fail("bootstrap", err); }
+})();
+</script>
+</body>
+</html>
