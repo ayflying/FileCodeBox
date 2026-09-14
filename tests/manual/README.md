@@ -61,6 +61,11 @@ python tests/manual/p2p_browser_acceptance.py \
   --chrome "$HOME/AppData/Local/ms-playwright/chromium-1228/chrome-win64/chrome.exe"
 ```
 
+**为什么不用 `agent-browser`**：本机上它无法自动拉起 Chrome，实测报
+`Chrome exited early (exit code: 0) without writing DevToolsActivePort`，
+且首次运行会长时间无响应。所以验收脚本走 Playwright 直连，用 `--chrome`
+显式指定已缓存的 Chromium，不依赖自动发现。
+
 ## 已验证结论（P1）
 
 - 协议层：52 项全过（信令 offer/answer/ice 双向往返、ping/pong、done 统计、
