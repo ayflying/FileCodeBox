@@ -9,7 +9,11 @@ Complete these settings once in the backend GitHub repository:
   only needs the default read-only Actions permission.
 - Keep squash merging enabled. The release workflow waits for required checks
   before merging the release pull request.
-- Add `DOCKER_USERNAME` and `DOCKER_PASSWORD` Actions secrets to the backend repository.
+- Images are published to the GitHub Container Registry
+  (`ghcr.io/<owner>/filecodebox`) and authenticate with the built-in
+  `GITHUB_TOKEN`, so no extra secrets are required; the workflow already
+  declares `packages: write`. Change the package visibility to Public in
+  `Package settings` if anonymous pulls should be allowed.
 
 1. Merge commits using Conventional Commit types such as `feat:` and `fix:` into the default branch.
 2. Release Please creates and merges the release pull request and updates `VERSION` and the changelog.

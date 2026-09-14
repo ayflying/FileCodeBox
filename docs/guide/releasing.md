@@ -7,7 +7,9 @@
 - `Settings → Actions → General → Workflow permissions` 选择读写权限，并允许
   GitHub Actions 创建 Pull Request。前端仓库只需要默认的 Actions 读取权限。
 - 保持 Squash merge 可用；自动发布工作流会等待必需检查通过后合并发布 PR。
-- 后端仓库配置 `DOCKER_USERNAME` 和 `DOCKER_PASSWORD` Actions Secrets。
+- 镜像推送到 GitHub Container Registry（`ghcr.io/<owner>/filecodebox`），登录凭据使用
+  内置的 `GITHUB_TOKEN`，无需额外配置 Secrets；工作流已声明 `packages: write` 权限。
+  首次推送后如需允许匿名拉取，在包的 `Package settings` 中把可见性改为 Public。
 
 1. 日常提交使用 `feat:`、`fix:` 等 Conventional Commits 前缀并合入主分支。
 2. Release Please 自动创建并合并发布 PR，更新 `VERSION` 和更新日志。
