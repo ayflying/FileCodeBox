@@ -164,3 +164,6 @@ AGENTS.md
 dist/
 # Frontend themes (built from GitHub during Docker build)
 themes/
+
+# WorkBuddy 会话工作记忆（本地文件，不入库）
+.workbuddy/
