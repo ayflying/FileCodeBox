@@ -49,6 +49,11 @@ jobs:
         run: pnpm install
       - name: Build with VitePress
         working-directory: docs
+        env:
+          # GitHub Pages 把站点挂在 /<repo>/ 子路径下，必须把 base 传给 VitePress，
+          # 否则产物里的 /assets/... 绝对路径会 404，页面失去样式与脚本。
+          VITEPRESS_BASE: /${{ github.event.repository.name }}/
+          VITEPRESS_HOSTNAME: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
         run: pnpm run docs:build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

@@ -1,18 +1,23 @@
 import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
+// 站点部署在子路径（如 GitHub Pages 的 /<repo>/）时，构建产物里的 /assets/... 等绝对路径会 404，
+// 页面将失去样式与脚本。故用 VITEPRESS_BASE 注入 base；本地开发与自定义域名部署保持默认 '/'。
+const base = process.env.VITEPRESS_BASE || '/'
+
 export default defineConfig({
+  base,
   title: 'FileCodeBox',
   description: 'FileCodeBox 自托管文件与文本分享服务文档',
   lang: 'zh-CN',
   lastUpdated: true,
   cleanUrls: true,
   sitemap: {
-    hostname: 'https://fcb-docs.aiuo.net',
+    hostname: process.env.VITEPRESS_HOSTNAME || 'https://fcb-docs.aiuo.net',
   },
   head: [
     ['meta', { name: 'theme-color', content: '#111111' }],
-    ['link', { rel: 'icon', href: '/logo_small.png' }],
+    ['link', { rel: 'icon', href: `${base}logo_small.png` }],
   ],
   locales: {
     root: {
