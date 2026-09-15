@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.1](https://github.com/ayflying/FileCodeBox/compare/v2.6.0...v2.6.1) (2026-09-15)
+
+
+### Bug Fixes
+
+* **docs:** 修正 GitHub Pages 子路径部署的资源路径（base） ([00e2836](https://github.com/ayflying/FileCodeBox/commit/00e2836d31da17a0cd55d93a5ce197dbace0dbbc))
+
 ## [2.6.0](https://github.com/ayflying/FileCodeBox/compare/v2.5.6...v2.6.0) (2026-09-15)
 
 
