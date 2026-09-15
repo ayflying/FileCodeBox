@@ -144,7 +144,7 @@ docker run -d --restart unless-stopped \
   --log-opt max-size=10m \
   --log-opt max-file=3 \
   --name filecodebox \
-  lanol/filecodebox:latest
+  ghcr.io/ayflying/filecodebox:latest
 ```
 
 ### Manual Deployment

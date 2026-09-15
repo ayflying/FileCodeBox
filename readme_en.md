@@ -11,7 +11,7 @@ A lightweight, modern, self-hosted file sharing service. No account required—u
 [Live Demo](https://share.lanol.cn)　·　[Documentation](https://fcb-docs.aiuo.net/en/)　·　[简体中文](./readme.md)
 
 [![Release](https://img.shields.io/github/v/release/vastsa/FileCodeBox?style=flat-square&color=111111)](https://github.com/vastsa/FileCodeBox/releases/latest)
-[![Docker Pulls](https://img.shields.io/docker/pulls/lanol/filecodebox?style=flat-square&logo=docker&color=111111)](https://hub.docker.com/r/lanol/filecodebox)
+[![ghcr.io](https://img.shields.io/badge/ghcr.io-ayflying%2Ffilecodebox-2496ED?style=flat-square&logo=docker&color=111111)](https://github.com/ayflying/FileCodeBox/pkgs/container/filecodebox)
 [![Stars](https://img.shields.io/github/stars/vastsa/FileCodeBox?style=flat-square&logo=github&color=111111)](https://github.com/vastsa/FileCodeBox/stargazers)
 [![License](https://img.shields.io/github/license/vastsa/FileCodeBox?style=flat-square&color=111111)](./LICENSE)
 

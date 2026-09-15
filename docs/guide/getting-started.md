@@ -28,7 +28,7 @@ docker run -d --restart unless-stopped \
   --log-opt max-size=10m \
   --log-opt max-file=3 \
   --name filecodebox \
-  lanol/filecodebox:latest
+  ghcr.io/ayflying/filecodebox:latest
 ```
 
 #### Docker Compose
@@ -37,7 +37,7 @@ docker run -d --restart unless-stopped \
 version: "3"
 services:
   file-code-box:
-    image: lanol/filecodebox:latest
+    image: ghcr.io/ayflying/filecodebox:latest
     volumes:
       - fcb-data:/app/data:rw
     restart: unless-stopped
@@ -83,7 +83,7 @@ docker run -d --restart=always \
   --name filecodebox \
   --log-opt max-size=10m \
   --log-opt max-file=3 \
-  lanol/filecodebox:latest
+  ghcr.io/ayflying/filecodebox:latest
 ```
 
 ### 配置反向代理（Nginx）
