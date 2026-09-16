@@ -25,7 +25,7 @@ env:
   # 不要改回上游：上游前端 2026-09-09 起只读 snake_case 配置字段，
   # 而本仓库后端仍是 camelCase 契约，跟随上游 HEAD 会让 /#/send 等页面直接白屏。
   # 详见 Dockerfile 中 frontend-builder 阶段的说明。
-  FRONTEND_2024_REF: ec15a1b1ffe1cd83ad6e9b7ca541e5cca748199e
+  FRONTEND_2024_REF: 5bb64e382545c6ca82c05d11a3f7f0b8acfe023d
   FRONTEND_2023_REF: 5d5e77d97b4278bfd543b26e50ed13e5fbf72452
 
 jobs:
