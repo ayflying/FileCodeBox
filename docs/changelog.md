@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.2](https://github.com/ayflying/FileCodeBox/compare/v2.8.1...v2.8.2) (2026-09-16)
+
+
+### Bug Fixes
+
+* **ci:** 前端 2024 主题 ref 指向类型修复后的提交，恢复镜像构建 ([e757719](https://github.com/ayflying/FileCodeBox/commit/e7577192d5463407c2d63376b5c7901689882ea0))
+
 ## [2.8.1](https://github.com/ayflying/FileCodeBox/compare/v2.8.0...v2.8.1) (2026-09-16)
 
 
