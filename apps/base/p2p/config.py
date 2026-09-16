@@ -14,6 +14,7 @@ DEFAULT_HEARTBEAT_TIMEOUT = 30
 DEFAULT_ROOM_TTL = 900
 DEFAULT_MAX_PEERS = 3
 DEFAULT_TURN_TTL = 7200
+DEFAULT_STUN_PORT = 3478
 
 
 def _as_int(value: Any, default: int) -> int:
@@ -37,6 +38,23 @@ def _as_url_list(value: Any) -> List[str]:
     if isinstance(value, (list, tuple, set)):
         return [str(item).strip() for item in value if str(item).strip()]
     return []
+
+
+def _host_only(value: Any) -> str:
+    """从 Host 头取纯主机名。
+
+    Host 可能是 `1.2.3.4:8080`、`example.com`、或 IPv6 字面量 `[::1]:8080`，
+    这里统一剥离端口与方括号，避免拼出 `stun:host:8080:3478` 这类非法地址。
+    """
+    raw = str(value or "").strip()
+    if not raw:
+        return ""
+    if raw.startswith("["):
+        end = raw.find("]")
+        return raw[1:end] if end > 0 else raw
+    if raw.count(":") == 1:
+        return raw.split(":", 1)[0]
+    return raw
 
 
 def p2p_enabled() -> bool:
@@ -73,10 +91,34 @@ def p2p_max_peers() -> int:
     return max(1, _as_int(getattr(settings, "p2pMaxPeers", DEFAULT_MAX_PEERS), DEFAULT_MAX_PEERS))
 
 
-def p2p_stun_urls() -> List[str]:
-    return _as_url_list(getattr(settings, "p2pStunUrls", [])) or [
-        "stun:stun.l.google.com:19302"
-    ]
+def p2p_stun_enabled() -> bool:
+    """内置 STUN 开关。"""
+    return _as_bool(getattr(settings, "p2pStunEnabled", 1), True)
+
+
+def p2p_stun_port() -> int:
+    """内置 STUN 监听端口。"""
+    port = _as_int(getattr(settings, "p2pStunPort", DEFAULT_STUN_PORT), DEFAULT_STUN_PORT)
+    return port if 1 <= port <= 65535 else DEFAULT_STUN_PORT
+
+
+def p2p_stun_urls(request_host: Any = None) -> List[str]:
+    """下发给前端的 STUN 列表。
+
+    取值为空时**不再回退到第三方 STUN**，而是按当前访问入口派生，
+    指向站点内置的自建 STUN —— 这样「站点可达即 STUN 可达」，
+    换访问地址（内网 IP / 虚拟网 IP / 域名）都不需要改配置。
+    显式配置了列表则以配置为准，便于将来挂外部 STUN。
+    """
+    configured = _as_url_list(getattr(settings, "p2pStunUrls", []))
+    if configured:
+        return configured
+    if not p2p_stun_enabled():
+        return []
+    host = _host_only(request_host)
+    if not host:
+        return []
+    return [f"stun:{host}:{p2p_stun_port()}"]
 
 
 def p2p_turn_urls() -> List[str]:

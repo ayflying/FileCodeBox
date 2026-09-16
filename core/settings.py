@@ -99,8 +99,14 @@ DEFAULT_CONFIG = {
     "p2pHeartbeatTimeout": 30,
     # 无人在线的房间回收秒数
     "p2pRoomTtl": 900,
-    # STUN 列表
-    "p2pStunUrls": ["stun:stun.l.google.com:19302"],
+    # STUN 列表。留空 = 跟随站点访问入口自动派生（stun:<访问域名或IP>:p2pStunPort），
+    # 指向站点内置的自建 STUN，不依赖任何第三方 STUN。
+    # 如需指定外部 STUN，在此显式写入（如 ["stun:stun.example.com:3478"]）即覆盖自动派生。
+    "p2pStunUrls": [],
+    # 内置 STUN 开关（随站点进程启停，RFC 5389 Binding）
+    "p2pStunEnabled": 1,
+    # 内置 STUN 监听端口
+    "p2pStunPort": 3478,
     # TURN 列表（如 turn:your.host:3478）
     "p2pTurnUrls": [],
     # coturn static-auth-secret，仅服务端可见，绝不下发前端

@@ -17,7 +17,13 @@ from tortoise.contrib.fastapi import register_tortoise
 from apps.admin.views import admin_api
 from apps.base.models import KeyValue
 from apps.base.p2p import p2p_api
-from apps.base.p2p.config import apply_room_manager_config, build_public_p2p_config
+from apps.base.p2p.config import (
+    apply_room_manager_config,
+    build_public_p2p_config,
+    p2p_stun_enabled,
+    p2p_stun_port,
+)
+from apps.base.p2p.stun import start_stun_server
 from apps.base.utils import ip_limit
 from apps.base.views import share_api, chunk_api, presign_api
 from core.config import (
@@ -734,6 +740,24 @@ async def lifespan(app: FastAPI):
     task = asyncio.create_task(delete_expire_files())
     chunk_cleanup_task = asyncio.create_task(clean_incomplete_uploads())
     presign_cleanup_task = asyncio.create_task(clean_expired_presign_sessions())
+
+    # 内置 STUN（P2P 直连用，RFC 5389 Binding）
+    # 起不来只降级为「无 STUN」，绝不影响站点本身可用。
+    stun_transport = None
+    if p2p_stun_enabled():
+        try:
+            stun_transport, _stun_protocol = await start_stun_server(
+                port=p2p_stun_port()
+            )
+        except OSError as exc:
+            logger.warning(
+                "内置 STUN 启动失败（UDP %s 不可用，P2P 将只依赖直连候选）：%s",
+                p2p_stun_port(),
+                exc,
+            )
+    else:
+        logger.info("内置 STUN 已按配置关闭")
+
     logger.info("应用初始化完成")
 
     try:
@@ -744,6 +768,8 @@ async def lifespan(app: FastAPI):
         task.cancel()
         chunk_cleanup_task.cancel()
         presign_cleanup_task.cancel()
+        if stun_transport is not None:
+            stun_transport.close()
         await asyncio.gather(
             task,
             chunk_cleanup_task,

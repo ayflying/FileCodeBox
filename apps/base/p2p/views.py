@@ -9,7 +9,7 @@ import os
 import time
 from typing import Optional
 
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, Request
 
 from apps.admin.dependencies import share_required_login
 from apps.base.file_validation import validate_file_type
@@ -222,9 +222,11 @@ async def p2p_unpublish(data: P2PUnpublishModel):
 
 
 @p2p_api.post("/ice")
-async def p2p_ice(ip: str = Depends(ip_limit["metadata"])):
+async def p2p_ice(request: Request, ip: str = Depends(ip_limit["metadata"])):
     """签发 ICE 配置。
 
+    STUN 默认按当前访问入口派生，指向同机自建 coturn（见 config.p2p_stun_urls），
+    因此不再依赖任何第三方 STUN。
     TURN 走 coturn REST 临时凭据，静态密钥永不下发前端（见 §7.2）。
     未配置 TURN 时只返回 STUN，且不伪装成可用。
     """
@@ -233,7 +235,7 @@ async def p2p_ice(ip: str = Depends(ip_limit["metadata"])):
     ip_limit["metadata"].add_ip(ip)
     return APIResponse(
         detail=build_ice_servers(
-            stun_urls=p2p_stun_urls(),
+            stun_urls=p2p_stun_urls(request_host=request.headers.get("host")),
             turn_urls=p2p_turn_urls(),
             turn_secret=p2p_turn_secret(),
             user_id=turn_user_id(ip),

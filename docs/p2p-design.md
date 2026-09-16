@@ -129,7 +129,9 @@ P2P 记录中 `file_path` / `uuid_file_name` 留空，`size` 存文件真实大�
 | `p2pMaxPeers` | `3` | 单分享并发下载者上限 |
 | `p2pHeartbeatTimeout` | `30` | 心跳超时秒数 |
 | `p2pRoomTtl` | `900` | 空房间回收秒数 |
-| `p2pStunUrls` | `["stun:stun.l.google.com:19302"]` | STUN 列表 |
+| `p2pStunUrls` | `[]` | STUN 列表。留空 = 按访问入口自动派生 `stun:<host>:p2pStunPort`，指向站点**内置自建 STUN**；显式写入则以其为准。**默认不含任何第三方 STUN** |
+| `p2pStunEnabled` | `1` | 内置 STUN 开关（随站点进程启停，实现见 `apps/base/p2p/stun.py`） |
+| `p2pStunPort` | `3478` | 内置 STUN 监听端口（容器与防火墙需放行 UDP） |
 | `p2pTurnUrls` | `[]` | TURN 列表（如 `turn:your.host:3478`） |
 | `p2pTurnSecret` | `""` | coturn `static-auth-secret`，**仅服务端可见** |
 | `p2pTurnTtl` | `7200` | TURN 临时凭据有效期 |
@@ -299,9 +301,31 @@ proxy_set_header Connection "upgrade";
 proxy_read_timeout 3600s;
 ```
 
-### 9.3 coturn
+### 9.3 STUN（内置）与 coturn（仅 TURN 需要）
 
-新增 coturn 服务（可与站点同机部署）：
+**STUN 无需任何外部依赖，也不需要额外部署服务**：
+`apps/base/p2p/stun.py` 在站点进程内实现了 RFC 5389 Binding（只做 ICE 收集 srflx
+候选所需的最小集合），随应用一起启停（见 `main.py` 的 `lifespan`），端口取
+`p2pStunPort`（默认 3478/udp）。
+
+下发给前端的 STUN 地址由 `p2p_stun_urls()` 按**当前访问入口**派生，因此
+「站点可达即 STUN 可达」——换内网 IP、虚拟网 IP 或域名都不需要改配置。
+默认配置里**不含任何第三方 STUN**；如需改用外部 STUN，把地址写进 `p2pStunUrls`
+即覆盖自动派生。
+
+只需保证 UDP 端口可入：
+
+```yaml
+ports:
+  - "12345:12345"
+  - "3478:3478/udp"   # 内置 STUN
+```
+
+宿主防火墙同样要放行 3478/udp。内置 STUN 起不来（端口被占）时只降级为
+「无 STUN」，站点本身照常可用。
+
+**coturn 仅在需要 TURN 中继时才部署**（对称型 NAT 兜底 —— 此时服务器必然在传数据，
+属 §2 已划定的例外）。单独部署 coturn 服务，可与站点同机：
 
 ```
 listening-port=3478
@@ -316,6 +340,7 @@ max-port=65535
 
 需在防火墙放行 3478/tcp+udp、5349/tcp+udp 及 49152-65535/udp 端口段。
 若服务器本身在 NAT 后，`external-ip` 必须写公网地址。
+部署后把 `turn:<host>:3478` 写进 `p2pTurnUrls` 并配置 `p2pTurnSecret`。
 
 ### 9.4 清理任务
 
@@ -386,6 +411,7 @@ P1 范围：**WS 信令骨架 + 房间鉴权**。数据面（直连传输、流�
 | `apps/base/p2p/tokens.py` | 发布令牌哈希与校验、coturn REST 临时凭据、ICE servers 组装 |
 | `apps/base/p2p/rooms.py` | 进程内房间表 + `SignalingRouter`（只产投递决策，不碰 WebSocket，可单测） |
 | `apps/base/p2p/store.py` | 房间状态落库（在线状态、累计统计、主动下线），心跳写库做 15s 节流 |
+| `apps/base/p2p/stun.py` | 内置 STUN（RFC 5389 Binding），随应用 lifespan 启停，不依赖第三方 STUN |
 | `apps/base/p2p/views.py` | REST 控制面：`/p2p/publish`、`/p2p/status/{code}`、`/p2p/unpublish`、`/p2p/ice` |
 | `apps/base/p2p/signaling.py` | WS 端点 `/p2p/signal/{code}`，只做连接生命周期与消息搬运 |
 | `apps/base/migrations/migrations_007.py` | 幂等增量迁移：7 个 P2P 列 + `is_p2p` 索引 |
