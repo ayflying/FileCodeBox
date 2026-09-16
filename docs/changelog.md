@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.8](https://github.com/ayflying/FileCodeBox/compare/v2.8.7...v2.8.8) (2026-09-16)
+
+
+### Bug Fixes
+
+* **ci:** 前端 ref 指向 TS2367 冗余比较修复后的提交 ([45a77b5](https://github.com/ayflying/FileCodeBox/commit/45a77b5a52f87211195ade7d71cadc950f2c1a52))
+
 ## [2.8.7](https://github.com/ayflying/FileCodeBox/compare/v2.8.6...v2.8.7) (2026-09-16)
 
 
