@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.9](https://github.com/ayflying/FileCodeBox/compare/v2.8.8...v2.8.9) (2026-09-16)
+
+
+### Bug Fixes
+
+* **p2p:** 附双浏览器端到端直传回归脚本 ([eb2de9e](https://github.com/ayflying/FileCodeBox/commit/eb2de9e38b00b1d49f3e92701a2ef3ff997bd462))
+
 ## [2.8.8](https://github.com/ayflying/FileCodeBox/compare/v2.8.7...v2.8.8) (2026-09-16)
 
 
