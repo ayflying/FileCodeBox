@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.0](https://github.com/ayflying/FileCodeBox/compare/v2.7.0...v2.8.0) (2026-09-16)
+
+
+### Features
+
+* **p2p:** 前端 2024 主题切换至 fork 自维护仓库并启用 P2P 直传 ([3213f2b](https://github.com/ayflying/FileCodeBox/commit/3213f2b23a144db65e84f87f68a4be0a58015f6d))
+
 ## [2.7.0](https://github.com/ayflying/FileCodeBox/compare/v2.6.2...v2.7.0) (2026-09-16)
 
 
