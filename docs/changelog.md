@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.0](https://github.com/ayflying/FileCodeBox/compare/v2.6.2...v2.7.0) (2026-09-16)
+
+
+### Features
+
+* **p2p:** 内置 STUN 服务，不再依赖第三方 STUN ([d88ffdc](https://github.com/ayflying/FileCodeBox/commit/d88ffdc9f78ae563617c9ba07d717aec0ced5b5e))
+
 ## [2.6.2](https://github.com/ayflying/FileCodeBox/compare/v2.6.1...v2.6.2) (2026-09-16)
 
 
