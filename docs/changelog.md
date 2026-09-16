@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.4](https://github.com/ayflying/FileCodeBox/compare/v2.8.3...v2.8.4) (2026-09-16)
+
+
+### Bug Fixes
+
+* **ci:** 前端 ref 指向校验和类型修复后的提交 ([dfea8d4](https://github.com/ayflying/FileCodeBox/commit/dfea8d4d1afe72cbdabff2548929fe53b4033024))
+
 ## [2.8.3](https://github.com/ayflying/FileCodeBox/compare/v2.8.2...v2.8.3) (2026-09-16)
 
 
