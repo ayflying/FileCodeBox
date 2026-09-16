@@ -6,7 +6,7 @@ FROM --platform=$BUILDPLATFORM node:20-alpine AS frontend-builder
 #
 # 2024 主题已迁至本 fork 自维护：ayflying/FileCodeBoxFronted（公开仓库）。
 # 基线是「snake_case 迁移之前」的最后一个可用版本 2f0a04d2a5c1（2026-09-07），
-# 在其之上增加了 P2P 直传分享与取件功能（919510a，2026-09-16）。
+# 在其之上增加了 P2P 直传分享与取件功能（ec15a1b，2026-09-16）。
 # 本仓库后端仍使用 camelCase 的公开配置契约（uploadSize / allowedFileTypes /
 # expireStyle / enableChunk / openUpload ...），而上游前端自 2026-09-09 起（commit
 # c6b6b64869「rename config keys to snake_case」）改为只读 snake_case 字段，配套的是
@@ -16,7 +16,7 @@ FROM --platform=$BUILDPLATFORM node:20-alpine AS frontend-builder
 # 页面白屏。待后端契约同步到上游 2.6.0+ 后再考虑解除该限制。
 #
 # 2023 主题保持上游钉版：5d5e77d97b42 = 2025-03-02（上游 2026-09-14 才切 snake_case）。
-ARG FRONTEND_2024_REF=919510af0975680e23363ab58e7bb34955920b0b
+ARG FRONTEND_2024_REF=ec15a1b1ffe1cd83ad6e9b7ca541e5cca748199e
 ARG FRONTEND_2023_REF=5d5e77d97b4278bfd543b26e50ed13e5fbf72452
 
 RUN apk add --no-cache git python3 make g++
@@ -47,7 +47,7 @@ FROM python:3.12-slim-bookworm
 ARG APP_VERSION
 ARG VCS_REF=unknown
 # 默认值与 frontend-builder 阶段一致，仅用于写入镜像 LABEL；CI 会显式传入。
-ARG FRONTEND_2024_REF=919510af0975680e23363ab58e7bb34955920b0b
+ARG FRONTEND_2024_REF=ec15a1b1ffe1cd83ad6e9b7ca541e5cca748199e
 ARG FRONTEND_2023_REF=5d5e77d97b4278bfd543b26e50ed13e5fbf72452
 LABEL author="Lan"
 LABEL email="xzu@live.com"
