@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.7](https://github.com/ayflying/FileCodeBox/compare/v2.8.6...v2.8.7) (2026-09-16)
+
+
+### Bug Fixes
+
+* **ci:** 前端 ref 指向信令断开不杀直连修复后的提交 ([d5d982e](https://github.com/ayflying/FileCodeBox/commit/d5d982e53293552ef1b9dce31c435fe62ebece8e))
+
 ## [2.8.6](https://github.com/ayflying/FileCodeBox/compare/v2.8.5...v2.8.6) (2026-09-16)
 
 
