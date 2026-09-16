@@ -20,6 +20,12 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
+  # 前端主题按 commit 钉死，与 Dockerfile 中的同名 ARG 默认值保持一致。
+  # 不要改回「跟随上游 HEAD」：上游前端 2026-09-09 起只读 snake_case 配置字段，
+  # 而本仓库后端仍是 camelCase 契约，跟随 HEAD 会让 /#/send 等页面直接白屏。
+  # 详见 Dockerfile 中 frontend-builder 阶段的说明。
+  FRONTEND_2024_REF: 2f0a04d2a5c136976357bd2b18ab0d1a5d87ef5f
+  FRONTEND_2023_REF: 5d5e77d97b4278bfd543b26e50ed13e5fbf72452
 
 jobs:
   buildx:
@@ -79,17 +85,6 @@ jobs:
           echo "value=$revision" >> "$GITHUB_OUTPUT"
           echo "short=${revision::12}" >> "$GITHUB_OUTPUT"
 
-      - name: Resolve latest frontend revisions
-        id: frontend-revisions
-        shell: bash
-        run: |
-          frontend_2024_ref="$(git ls-remote https://github.com/vastsa/FileCodeBoxFronted.git HEAD | cut -f1)"
-          frontend_2023_ref="$(git ls-remote https://github.com/vastsa/FileCodeBoxFronted2023.git HEAD | cut -f1)"
-          test -n "$frontend_2024_ref"
-          test -n "$frontend_2023_ref"
-          echo "frontend_2024=$frontend_2024_ref" >> "$GITHUB_OUTPUT"
-          echo "frontend_2023=$frontend_2023_ref" >> "$GITHUB_OUTPUT"
-
       - name: Resolve application version
         id: app-version
         shell: bash
@@ -131,8 +126,8 @@ jobs:
           build-args: |
             APP_VERSION=${{ steps.app-version.outputs.value }}
             VCS_REF=${{ steps.source-revision.outputs.value }}
-            FRONTEND_2024_REF=${{ steps.frontend-revisions.outputs.frontend_2024 }}
-            FRONTEND_2023_REF=${{ steps.frontend-revisions.outputs.frontend_2023 }}
+            FRONTEND_2024_REF=${{ env.FRONTEND_2024_REF }}
+            FRONTEND_2023_REF=${{ env.FRONTEND_2023_REF }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: false

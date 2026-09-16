@@ -2,8 +2,23 @@
 # 前端产物与 CPU 架构无关，使用原生构建平台避免在 QEMU 中运行 Node/pnpm。
 FROM --platform=$BUILDPLATFORM node:20-alpine AS frontend-builder
 
-ARG FRONTEND_2024_REF=main
-ARG FRONTEND_2023_REF=main
+# 前端主题按 commit 钉死，禁止跟随上游 main 浮动（与 docker-image.yml 中的同名变量保持一致）。
+#
+# 原因：本仓库后端仍使用 camelCase 的公开配置契约（uploadSize / allowedFileTypes /
+# expireStyle / enableChunk / openUpload ...），而上游前端自 2026-09-09 起（commit
+# c6b6b64869「rename config keys to snake_case」）改为只读 snake_case 字段，配套的是
+# 上游后端 2.6.0 的契约迁移。若继续跟随 main，前端拿不到 expire_style，
+# /#/send 会在 setup 阶段直接抛
+#   TypeError: Cannot read properties of undefined (reading '0')
+# 页面白屏。
+#
+# 这里锁定的两个 commit 是「snake_case 迁移之前」的最后一个可用版本：
+#   2024 主题 2f0a04d2a5c1 = 2026-09-07（仅含 dependabot 依赖修复）
+#   2023 主题 5d5e77d97b42 = 2025-03-02（上游 2026-09-14 才切 snake_case）
+# 待后端契约同步到上游 2.6.0+ / 切换到本 fork 自维护的前端仓库（P4 阶段）后，
+# 再解除这里的版本锁定。
+ARG FRONTEND_2024_REF=2f0a04d2a5c136976357bd2b18ab0d1a5d87ef5f
+ARG FRONTEND_2023_REF=5d5e77d97b4278bfd543b26e50ed13e5fbf72452
 
 RUN apk add --no-cache git python3 make g++
 
@@ -32,8 +47,9 @@ RUN git clone --filter=blob:none --no-checkout https://github.com/vastsa/FileCod
 FROM python:3.12-slim-bookworm
 ARG APP_VERSION
 ARG VCS_REF=unknown
-ARG FRONTEND_2024_REF=main
-ARG FRONTEND_2023_REF=main
+# 默认值与 frontend-builder 阶段一致，仅用于写入镜像 LABEL；CI 会显式传入。
+ARG FRONTEND_2024_REF=2f0a04d2a5c136976357bd2b18ab0d1a5d87ef5f
+ARG FRONTEND_2023_REF=5d5e77d97b4278bfd543b26e50ed13e5fbf72452
 LABEL author="Lan"
 LABEL email="xzu@live.com"
 LABEL org.opencontainers.image.version="${APP_VERSION}"
