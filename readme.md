@@ -35,7 +35,7 @@ docker run -d --restart unless-stopped \
   --log-opt max-size=10m \
   --log-opt max-file=3 \
   --name filecodebox \
-  ghcr.io/ayflying/filecodebox:2.8.7 # x-release-please-version
+  ghcr.io/ayflying/filecodebox:2.8.8 # x-release-please-version
 ```
 
 访问 `http://localhost:12345`，完成首次初始化。生产环境建议固定版本号；`latest` 指向最新正式版。
