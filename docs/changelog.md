@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.8.5](https://github.com/ayflying/FileCodeBox/compare/v2.8.4...v2.8.5) (2026-09-16)
+
+
+### Bug Fixes
+
+* **ci:** 前端 ref 指向数据通道竞态修复后的提交 ([df3c161](https://github.com/ayflying/FileCodeBox/commit/df3c16119a0f8b212e05268e43d1f81beecf7645))
+* **p2p:** 后台文件管理、仪表盘与配额统计排除 P2P 直传记录 ([31dd14a](https://github.com/ayflying/FileCodeBox/commit/31dd14aea9c4a7efd34d99b9aa98119ee8a3b92e))
+
 ## [2.8.4](https://github.com/ayflying/FileCodeBox/compare/v2.8.3...v2.8.4) (2026-09-16)
 
 
