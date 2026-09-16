@@ -1,8 +1,8 @@
 # P2P 直传分享 —— 设计方案
 
-> 状态：**设计评审中，尚未实现**
-> 目标版本：待定（基于 2.5.6 分支）
-> 关联 fork：后端 `ayflying/FileCodeBox`，前端 `ayflying/FileCodeBoxFronted`（待建）
+> 状态：**P1 后端与前端基础已实现**（后端随 2.7.0 上线；前端含于 2026-09-16 版本）
+> 目标版本：基于 2.5.6 分支
+> 关联 fork：后端 `ayflying/FileCodeBox`，前端 `ayflying/FileCodeBoxFronted`
 
 ## 1. 背景与目标
 
@@ -390,7 +390,7 @@ max-port=65535
 |---|------|------|------|
 | D9 | `p2pMaxSize` 默认值 | **保持 2 GB**，定位为「服务端硬闸」而非推荐值 | 该值受下载端落盘方式制约：Chromium 可边收边写（受磁盘限制），Firefox/Safari 只能 Blob 拼装。硬闸取宽，体验约束交给前端能力检测处理（512 MB 提示阈值**硬编码**，不新增配置项，避免配置面膨胀） |
 | D10 | 目标版本号 | **`v2.6.0`** | 新增功能性能力属 minor 变更；由 release-please 依据 `feat:` 提交自动升版，不手工改 `VERSION` |
-| D11 | 前端 fork 与构建引用 | fork **已建**（`ayflying/FileCodeBoxFronted`，`main`）；Dockerfile 的 `FRONTEND_2024_REF` **暂不切换**，待前端实际改动落地（P4 前）再切 | 当前 fork 与上游代码一致，提前切换只产生无意义 diff |
+| D11 | 前端 fork 与构建引用 | fork 已建并已切换：`FRONTEND_2024_REF=c5909d44`（含 P2P 直传前端），clone 地址指向 `ayflying/FileCodeBoxFronted`（2026-09-16） | 上游前端 2026-09-09 起只读 snake_case 字段、与本后端契约不兼容；fork 钉版同时承载 P2P 前端改动 |
 | D12 | 多 worker 下的信令 | **先强制单进程信令**，不引入 Redis pub/sub | 现状 `WORKERS=1`；在真实出现多 worker 需求前不做分布式信令，避免过度设计 |
 
 ### 12.3 尚未决议（不阻塞 P1）
