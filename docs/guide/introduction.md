@@ -15,6 +15,12 @@
 </div>
 
 
+::: info 关于本仓库
+本文档对应 fork 仓库 [ayflying/FileCodeBox](https://github.com/ayflying/FileCodeBox)，在上游 [vastsa/FileCodeBox](https://github.com/vastsa/FileCodeBox) 基础上增加了 P2P 直传等特性；镜像发布在 `ghcr.io/ayflying/filecodebox`。
+
+上方徽章与文末 Star 趋势展示的是上游项目的数据。问题反馈请提交到[本仓库 Issues](https://github.com/ayflying/FileCodeBox/issues)。
+:::
+
 ## 🖼️ 界面预览
 
 <p align="center">
@@ -165,7 +171,7 @@ docker run -d --restart unless-stopped \
 
 1. 克隆项目
 ```bash
-git clone https://github.com/vastsa/FileCodeBox.git
+git clone https://github.com/ayflying/FileCodeBox.git
 ```
 
 2. 安装依赖

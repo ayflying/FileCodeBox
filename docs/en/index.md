@@ -13,7 +13,7 @@ hero:
       text: Get Started
       link: /en/guide/getting-started
     - theme: alt
-      text: Live Demo
+      text: Upstream Demo
       link: https://share.lanol.cn
     - theme: alt
       text: Deployment Guide

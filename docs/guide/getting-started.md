@@ -100,7 +100,7 @@ location / {
 
 1. 克隆项目
 ```bash
-git clone https://github.com/vastsa/FileCodeBox.git
+git clone https://github.com/ayflying/FileCodeBox.git
 ```
 
 2. 安装依赖

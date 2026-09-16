@@ -19,6 +19,12 @@
 
 FileCodeBox is a lightweight file sharing tool developed with FastAPI + Vue3. It allows users to share text and files easily, where recipients only need a passcode to retrieve the files, just like picking up a package from a delivery locker.
 
+::: info About this repository
+This documentation belongs to the fork [ayflying/FileCodeBox](https://github.com/ayflying/FileCodeBox), which adds P2P direct transfer on top of upstream [vastsa/FileCodeBox](https://github.com/vastsa/FileCodeBox); images are published to `ghcr.io/ayflying/filecodebox`.
+
+The badges above and the Star History at the bottom reflect the upstream project. Please file issues in [this repository](https://github.com/ayflying/FileCodeBox/issues).
+:::
+
 ## 🖼️ Preview
 
 <div align="center">
@@ -28,7 +34,7 @@ FileCodeBox is a lightweight file sharing tool developed with FastAPI + Vue3. It
 </a>
 &nbsp;&nbsp;&nbsp;
 <a href="https://share.lanol.cn" target="_blank">
-<img src="https://img.shields.io/badge/Demo-share.lanol.cn-green?style=for-the-badge&logo=internet-explorer" alt="Demo Site">
+<img src="https://img.shields.io/badge/Upstream_Demo-share.lanol.cn-green?style=for-the-badge&logo=internet-explorer" alt="Demo Site">
 </a>
 </h3>
 </div>
@@ -151,7 +157,7 @@ docker run -d --restart unless-stopped \
 
 1. Clone the repository
 ```bash
-git clone https://github.com/vastsa/FileCodeBox.git
+git clone https://github.com/ayflying/FileCodeBox.git
 ```
 
 2. Install dependencies

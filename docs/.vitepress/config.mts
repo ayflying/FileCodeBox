@@ -42,11 +42,11 @@ export default defineConfig({
           {
             text: '资源',
             items: [
-              { text: '在线体验', link: 'https://share.lanol.cn' },
+              { text: '上游演示站', link: 'https://share.lanol.cn' },
               { text: '部署案例', link: '/showcase' },
               { text: '更新日志', link: '/changelog' },
               { text: '贡献指南', link: '/contributing' },
-              { text: 'GitHub', link: 'https://github.com/vastsa/FileCodeBox' },
+              { text: 'GitHub', link: 'https://github.com/ayflying/FileCodeBox' },
             ],
           },
         ],
@@ -104,14 +104,14 @@ export default defineConfig({
           ],
         },
         socialLinks: [
-          { icon: 'github', link: 'https://github.com/vastsa/FileCodeBox' },
+          { icon: 'github', link: 'https://github.com/ayflying/FileCodeBox' },
         ],
         footer: {
           message: '基于 LGPL-3.0 许可证发布',
           copyright: 'Copyright © 2022-present FileCodeBox',
         },
         editLink: {
-          pattern: 'https://github.com/vastsa/FileCodeBox/edit/master/docs/:path',
+          pattern: 'https://github.com/ayflying/FileCodeBox/edit/master/docs/:path',
           text: '在 GitHub 上编辑此页',
         },
         docFooter: {
@@ -160,11 +160,11 @@ export default defineConfig({
           {
             text: 'Resources',
             items: [
-              { text: 'Live Demo', link: 'https://share.lanol.cn' },
+              { text: 'Upstream Demo', link: 'https://share.lanol.cn' },
               { text: 'Showcase', link: '/en/showcase' },
               { text: 'Changelog', link: '/en/changelog' },
               { text: 'Contributing', link: '/en/contributing' },
-              { text: 'GitHub', link: 'https://github.com/vastsa/FileCodeBox' },
+              { text: 'GitHub', link: 'https://github.com/ayflying/FileCodeBox' },
             ],
           },
         ],
@@ -227,14 +227,14 @@ export default defineConfig({
           ],
         },
         socialLinks: [
-          { icon: 'github', link: 'https://github.com/vastsa/FileCodeBox' },
+          { icon: 'github', link: 'https://github.com/ayflying/FileCodeBox' },
         ],
         footer: {
           message: 'Released under the LGPL-3.0 license',
           copyright: 'Copyright © 2022-present FileCodeBox',
         },
         editLink: {
-          pattern: 'https://github.com/vastsa/FileCodeBox/edit/master/docs/:path',
+          pattern: 'https://github.com/ayflying/FileCodeBox/edit/master/docs/:path',
           text: 'Edit this page on GitHub',
         },
         docFooter: {
@@ -269,7 +269,7 @@ export default defineConfig({
 
     // 社交链接
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/vastsa/FileCodeBox' },
+      { icon: 'github', link: 'https://github.com/ayflying/FileCodeBox' },
     ],
 
     // 页脚

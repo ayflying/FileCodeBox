@@ -46,7 +46,7 @@ Production deployments output only warning, error, and other key events by defau
 
 1. Clone the repository
 ```bash
-git clone https://github.com/vastsa/FileCodeBox.git
+git clone https://github.com/ayflying/FileCodeBox.git
 ```
 
 2. Install dependencies

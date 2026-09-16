@@ -8,7 +8,7 @@
 
 一个轻量、现代的自托管文件分享工具。无需注册，上传后获得口令，对方输入即可取件。
 
-[在线演示](https://share.lanol.cn)　·　[使用文档](https://fcb-docs.aiuo.net/)　·　[English](./readme_en.md)
+[上游演示站](https://share.lanol.cn)　·　[使用文档](https://ayflying.github.io/FileCodeBox/)　·　[English](./readme_en.md)
 
 [![Release](https://img.shields.io/github/v/release/ayflying/FileCodeBox?style=flat-square&color=111111)](https://github.com/ayflying/FileCodeBox/releases/latest)
 [![ghcr.io](https://img.shields.io/badge/ghcr.io-ayflying%2Ffilecodebox-2496ED?style=flat-square&logo=docker&color=111111)](https://github.com/ayflying/FileCodeBox/pkgs/container/filecodebox)
@@ -20,6 +20,9 @@
 <img src="./.github/images/readme/banner_zh.webp" alt="FileCodeBox" width="100%" />
 
 </div>
+
+> 本仓库是 [FileCodeBox](https://github.com/vastsa/FileCodeBox) 的 fork，在上游基础上增加了 P2P 直传等特性。
+> 镜像发布在 `ghcr.io/ayflying/filecodebox`，问题反馈请提交到[本仓库 Issues](https://github.com/ayflying/FileCodeBox/issues)。
 
 ## 一条命令开始
 
@@ -72,11 +75,11 @@ docker run -d --restart unless-stopped \
 
 ## 继续了解
 
-- [快速开始](https://fcb-docs.aiuo.net/guide/getting-started) · 部署、初始化与升级
-- [存储配置](https://fcb-docs.aiuo.net/guide/storage) · 本地与对象存储
-- [安全设置](https://fcb-docs.aiuo.net/guide/security) · 限流、会话与访问保护
-- [API 文档](https://fcb-docs.aiuo.net/api/) · 上传、取件与管理接口
-- [前端源码](https://github.com/vastsa/FileCodeBoxFronted) · 当前 2024 主题
+- [快速开始](https://ayflying.github.io/FileCodeBox/guide/getting-started) · 部署、初始化与升级
+- [存储配置](https://ayflying.github.io/FileCodeBox/guide/storage) · 本地与对象存储
+- [安全设置](https://ayflying.github.io/FileCodeBox/guide/security) · 限流、会话与访问保护
+- [API 文档](https://ayflying.github.io/FileCodeBox/api/) · 上传、取件与管理接口
+- [前端源码](https://github.com/vastsa/FileCodeBoxFronted) · 上游仓库，当前 2024 主题
 
 ## 相关项目
 
@@ -100,7 +103,7 @@ docker run -d --restart unless-stopped \
 
 ## 参与项目
 
-欢迎 [提交 Issue](https://github.com/vastsa/FileCodeBox/issues/new/choose) 或 Pull Request。项目基于 [LGPL-3.0](./LICENSE) 发布。
+欢迎 [提交 Issue](https://github.com/ayflying/FileCodeBox/issues/new/choose) 或 Pull Request。项目基于 [LGPL-3.0](./LICENSE) 发布。
 
 ## 免责声明
 

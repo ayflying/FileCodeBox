@@ -2,7 +2,7 @@
 
 Here are some excellent sites built with FileCodeBox. If you've deployed FileCodeBox, feel free to submit a PR to add your site here!
 
-## Official Demo
+## Upstream Official Demo
 
 <div class="showcase-grid">
 
@@ -11,7 +11,7 @@ Here are some excellent sites built with FileCodeBox. If you've deployed FileCod
 ### 🌟 FileCodeBox Demo
 
 - **URL**: [share.lanol.cn](https://share.lanol.cn)
-- **Description**: Official demo site with the latest features
+- **Description**: Upstream official demo, running the upstream build (without this fork's P2P direct transfer)
 - **Highlights**: Stable, full-featured
 
 </div>
@@ -23,8 +23,8 @@ Here are some excellent sites built with FileCodeBox. If you've deployed FileCod
 ::: tip Submit Your Site
 If you've built your own file sharing service using FileCodeBox, you can submit it through:
 
-1. Submit a PR on [GitHub](https://github.com/vastsa/FileCodeBox) to edit this page
-2. Open an [Issue](https://github.com/vastsa/FileCodeBox/issues) with your site info
+1. Submit a PR on [GitHub](https://github.com/ayflying/FileCodeBox) to edit this page
+2. Open an [Issue](https://github.com/ayflying/FileCodeBox/issues) with your site info
 3. Join QQ Group 739673698 to contact the admin
 :::
 

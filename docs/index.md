@@ -13,7 +13,7 @@ hero:
       text: 快速开始
       link: /guide/getting-started
     - theme: alt
-      text: 在线体验
+      text: 上游演示站
       link: https://share.lanol.cn
     - theme: alt
       text: 部署指南

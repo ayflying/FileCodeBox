@@ -8,7 +8,7 @@
 
 A lightweight, modern, self-hosted file sharing service. No account required—upload, share the passcode, and retrieve.
 
-[Live Demo](https://share.lanol.cn)　·　[Documentation](https://fcb-docs.aiuo.net/en/)　·　[简体中文](./readme.md)
+[Upstream Demo](https://share.lanol.cn)　·　[Documentation](https://ayflying.github.io/FileCodeBox/en/)　·　[简体中文](./readme.md)
 
 [![Release](https://img.shields.io/github/v/release/ayflying/FileCodeBox?style=flat-square&color=111111)](https://github.com/ayflying/FileCodeBox/releases/latest)
 [![ghcr.io](https://img.shields.io/badge/ghcr.io-ayflying%2Ffilecodebox-2496ED?style=flat-square&logo=docker&color=111111)](https://github.com/ayflying/FileCodeBox/pkgs/container/filecodebox)
@@ -20,6 +20,9 @@ A lightweight, modern, self-hosted file sharing service. No account required—u
 <img src="./.github/images/readme/banner_en.webp" alt="FileCodeBox" width="100%" />
 
 </div>
+
+> This repository is a fork of [FileCodeBox](https://github.com/vastsa/FileCodeBox) with P2P direct transfer added.
+> Images are published to `ghcr.io/ayflying/filecodebox`; please report issues in [this repository](https://github.com/ayflying/FileCodeBox/issues).
 
 ## Start with one command
 
@@ -72,11 +75,11 @@ Open `http://localhost:12345` and complete first-run setup. Pin a version in pro
 
 ## Learn more
 
-- [Getting started](https://fcb-docs.aiuo.net/en/guide/getting-started) · deployment, setup, and upgrades
-- [Storage](https://fcb-docs.aiuo.net/en/guide/storage) · local and object storage
-- [Security](https://fcb-docs.aiuo.net/en/guide/security) · rate limits, sessions, and access protection
-- [API reference](https://fcb-docs.aiuo.net/en/api/) · upload, retrieval, and administration
-- [Frontend source](https://github.com/vastsa/FileCodeBoxFronted) · the active 2024 theme
+- [Getting started](https://ayflying.github.io/FileCodeBox/en/guide/getting-started) · deployment, setup, and upgrades
+- [Storage](https://ayflying.github.io/FileCodeBox/en/guide/storage) · local and object storage
+- [Security](https://ayflying.github.io/FileCodeBox/en/guide/security) · rate limits, sessions, and access protection
+- [API reference](https://ayflying.github.io/FileCodeBox/en/api/) · upload, retrieval, and administration
+- [Frontend source](https://github.com/vastsa/FileCodeBoxFronted) · upstream repo, the active 2024 theme
 
 ## Related projects
 
@@ -100,7 +103,7 @@ Drop in videos, links, or drafts, and get listen-worthy personal podcasts with c
 
 ## Contributing
 
-[Issues](https://github.com/vastsa/FileCodeBox/issues/new/choose) and pull requests are welcome. FileCodeBox is released under [LGPL-3.0](./LICENSE).
+[Issues](https://github.com/ayflying/FileCodeBox/issues/new/choose) and pull requests are welcome. FileCodeBox is released under [LGPL-3.0](./LICENSE).
 
 ## Disclaimer
 
