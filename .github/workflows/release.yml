@@ -55,3 +55,14 @@ jobs:
           GH_REPO: ${{ github.repository }}
           RELEASE_TAG: ${{ steps.release.outputs.tag_name }}
         run: gh workflow run docker-image.yml --ref master -f release_tag="$RELEASE_TAG"
+
+      - name: Rebuild docs site
+        # release-please 的版本提升 commit 由 GITHUB_TOKEN 推送，按 GitHub 规则不会触发
+        # push 事件的工作流，所以 docs.yml 不会自动跑，文档站会静默停在上一版
+        # （实测：仓库已是 2.6.1 时线上仍写着 2.6.0）。这里与上面的镜像构建同理，
+        # 显式再派发一次，保证站点上的安装示例版本号与仓库一致。
+        if: ${{ steps.release.outputs.release_created == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh workflow run docs.yml --ref master
