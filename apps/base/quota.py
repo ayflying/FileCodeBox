@@ -54,7 +54,8 @@ def get_storage_limit() -> int:
 
 async def get_storage_usage() -> dict[str, int | None]:
     now = await get_now()
-    used = await FileCodes.all().values_list("size", flat=True)
+    # P2P 直传不经服务端存储，不占用配额（p2p-design.md §10 P5 验收标准）
+    used = await FileCodes.filter(is_p2p=False).values_list("size", flat=True)
     reserved = await StorageReservation.filter(expires_at__gt=now).values_list(
         "size", flat=True
     )

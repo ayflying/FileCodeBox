@@ -461,7 +461,8 @@ class FileService:
         sort_by = self._normalize_sort_by(sort_by)
         reverse = sort_order.strip().lower() != "asc"
 
-        all_files = await FileCodes.all()
+        # P2P 直传记录不落实际文件，不进后台文件管理列表与统计
+        all_files = await FileCodes.filter(is_p2p=False)
         now = await get_now()
         enriched_files = []
         summary = {

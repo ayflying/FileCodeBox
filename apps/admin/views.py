@@ -103,7 +103,7 @@ async def build_dashboard_recent_file(file_code: FileCodes) -> dict:
 
 @admin_api.get("/dashboard")
 async def dashboard(file_service: FileService = Depends(get_file_service)):
-    all_codes = await FileCodes.all()
+    all_codes = await FileCodes.filter(is_p2p=False)
     all_size = sum([code.size for code in all_codes])
     sys_start = await KeyValue.filter(key="sys_start").first()
     now = await get_now()
@@ -111,9 +111,9 @@ async def dashboard(file_service: FileService = Depends(get_file_service)):
     yesterday_start = today_start - datetime.timedelta(days=1)
     yesterday_end = today_start - datetime.timedelta(microseconds=1)
     yesterday_codes = FileCodes.filter(
-        created_at__gte=yesterday_start, created_at__lte=yesterday_end
+        created_at__gte=yesterday_start, created_at__lte=yesterday_end, is_p2p=False
     )
-    today_codes = FileCodes.filter(created_at__gte=today_start)
+    today_codes = FileCodes.filter(created_at__gte=today_start, is_p2p=False)
     yesterday_file_codes = await yesterday_codes
     today_file_codes = await today_codes
     expired_count = 0
