@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.2](https://github.com/ayflying/FileCodeBox/compare/v2.6.1...v2.6.2) (2026-09-16)
+
+
+### Bug Fixes
+
+* **build:** 钉死前端主题版本，修复部署后 /#/send 白屏 ([69cdc7b](https://github.com/ayflying/FileCodeBox/commit/69cdc7b99b7c5afbc6e24103d1d174d2662eb2b5))
+
 ## [2.6.1](https://github.com/ayflying/FileCodeBox/compare/v2.6.0...v2.6.1) (2026-09-15)
 
 
