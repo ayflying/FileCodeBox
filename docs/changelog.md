@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.6](https://github.com/ayflying/FileCodeBox/compare/v2.8.5...v2.8.6) (2026-09-16)
+
+
+### Bug Fixes
+
+* **ci:** 前端 ref 指向 send 重载收窄修复后的提交 ([25e0e19](https://github.com/ayflying/FileCodeBox/commit/25e0e198dda46281f37900fc085caa4961cffc07))
+
 ## [2.8.5](https://github.com/ayflying/FileCodeBox/compare/v2.8.4...v2.8.5) (2026-09-16)
 
 
