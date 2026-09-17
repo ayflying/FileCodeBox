@@ -16,7 +16,7 @@ FROM --platform=$BUILDPLATFORM node:20-alpine AS frontend-builder
 # 页面白屏。待后端契约同步到上游 2.6.0+ 后再考虑解除该限制。
 #
 # 2023 主题保持上游钉版：5d5e77d97b42 = 2025-03-02（上游 2026-09-14 才切 snake_case）。
-ARG FRONTEND_2024_REF=48c2e16f6a4e6fd10feeb0b59e3f954a5c182d92
+ARG FRONTEND_2024_REF=a8295f7d222402c5c577f1005824052a72a35454
 ARG FRONTEND_2023_REF=5d5e77d97b4278bfd543b26e50ed13e5fbf72452
 
 RUN apk add --no-cache git python3 make g++
@@ -47,7 +47,7 @@ FROM python:3.12-slim-bookworm
 ARG APP_VERSION
 ARG VCS_REF=unknown
 # 默认值与 frontend-builder 阶段一致，仅用于写入镜像 LABEL；CI 会显式传入。
-ARG FRONTEND_2024_REF=48c2e16f6a4e6fd10feeb0b59e3f954a5c182d92
+ARG FRONTEND_2024_REF=a8295f7d222402c5c577f1005824052a72a35454
 ARG FRONTEND_2023_REF=5d5e77d97b4278bfd543b26e50ed13e5fbf72452
 LABEL author="Lan"
 LABEL email="xzu@live.com"
