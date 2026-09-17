@@ -240,6 +240,7 @@ def build_file_metadata(file_code: FileCodes) -> dict:
         "size": file_code.size,
         "type": "text" if is_text else "file",
         "is_text": is_text,
+        "is_p2p": bool(getattr(file_code, "is_p2p", False)),
         "created_at": file_code.created_at,
         "expired_at": file_code.expired_at,
         "expires_at": file_code.expired_at,
@@ -253,7 +254,11 @@ async def build_select_detail(
     file_code: FileCodes, file_storage: FileStorageInterface
 ) -> dict:
     metadata = build_file_metadata(file_code)
-    if file_code.text is not None:
+    if file_code.is_p2p:
+        # P2P 文件不落服务端磁盘：不下发指向服务端下载接口的死链，
+        # 前端凭 is_p2p 标记引导取件端走 WebRTC 直连。
+        download_url = None
+    elif file_code.text is not None:
         download_url = None
     elif file_code.expired_count >= 0:
         # 有次数限制的文件必须经过下载接口，第三方直链无法阻止重复使用。
@@ -304,6 +309,10 @@ async def get_code_file(code: str, ip: str = Depends(ip_limit["error"])):
         return APIResponse(code=404, detail=file_code)
 
     assert isinstance(file_code, FileCodes)
+    if file_code.is_p2p:
+        # P2P 文件不在服务端，直链下载永远是死链，明确指路而不是误报「已过期删除」。
+        ip_limit["error"].add_ip(ip)
+        return APIResponse(code=404, detail="P2P 直传分享请通过取件页直连获取")
     if not await consume_file_usage(file_code):
         return APIResponse(code=404, detail="文件已过期")
     if file_code.text is not None:
@@ -329,6 +338,11 @@ async def select_file(data: SelectFileModel, ip: str = Depends(ip_limit["error"]
         return APIResponse(code=404, detail=file_code)
 
     assert isinstance(file_code, FileCodes)
+    if file_code.is_p2p:
+        # P2P 取件不走服务端：仅返回元数据（含 is_p2p 标记，前端据此转直连面板），
+        # 不消耗取件次数，也不下发指向服务端的下载死链。
+        detail = await build_select_detail(file_code, file_storage)
+        return APIResponse(detail=detail)
     detail = await build_select_detail(file_code, file_storage)
     download_url = detail.get("download_url")
     consumes_on_download = isinstance(download_url, str) and download_url.startswith(
