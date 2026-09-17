@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.12](https://github.com/ayflying/FileCodeBox/compare/v2.8.11...v2.8.12) (2026-09-17)
+
+
+### Bug Fixes
+
+* **p2p:** select 接口对 P2P 分享去掉死链并打标，取件不再误报「文件已过期删除」 ([f5b86ce](https://github.com/ayflying/FileCodeBox/commit/f5b86ce60b3fead541876d68b8a42ce5a299dafe))
+
 ## [2.8.11](https://github.com/ayflying/FileCodeBox/compare/v2.8.10...v2.8.11) (2026-09-17)
 
 
