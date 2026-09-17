@@ -90,7 +90,8 @@ DEFAULT_CONFIG = {
     # 上传页勾选框默认状态
     "p2pDefaultChecked": 1,
     # P2P 单文件上限，服务端硬闸；不计入 storageLimit（见决策 D4/D9）
-    "p2pMaxSize": 2 * 1024**3,
+    # 0 = 不限制：P2P 文件不落服务端磁盘，大小只受两端设备约束
+    "p2pMaxSize": 0,
     # 是否允许流式中转兜底
     "p2pRelayEnabled": 1,
     # 单分享并发下载者上限

@@ -9,7 +9,7 @@ from typing import Any, List
 from apps.base.p2p.rooms import room_manager
 from core.settings import settings
 
-DEFAULT_P2P_MAX_SIZE = 2 * 1024**3
+DEFAULT_P2P_MAX_SIZE = 0  # 0 = 不限制单文件大小
 DEFAULT_HEARTBEAT_TIMEOUT = 30
 DEFAULT_ROOM_TTL = 900
 DEFAULT_MAX_PEERS = 3
@@ -118,7 +118,13 @@ def p2p_stun_urls(request_host: Any = None) -> List[str]:
     host = _host_only(request_host)
     if not host:
         return []
-    return [f"stun:{host}:{p2p_stun_port()}"]
+    urls = [f"stun:{host}:{p2p_stun_port()}"]
+    # 公共 STUN 兜底：入口在虚网/内网时外网端摸不到自建 STUN，
+    # 没有 srflx 候选就无法公网打洞（速度被虚网隧道中继限死）
+    for fallback in ("stun:stun.miwifi.com:3478",):
+        if fallback not in urls:
+            urls.append(fallback)
+    return urls
 
 
 def p2p_turn_urls() -> List[str]:
