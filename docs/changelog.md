@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.10](https://github.com/ayflying/FileCodeBox/compare/v2.8.9...v2.8.10) (2026-09-17)
+
+
+### Bug Fixes
+
+* **p2p:** 前端 ref 更新到 a8295f7（HTTP 环境内存暂存上限提至 2GB） ([28b2658](https://github.com/ayflying/FileCodeBox/commit/28b2658f01eaffb3c41a4205f27fb3a7d4d0a433))
+
 ## [2.8.9](https://github.com/ayflying/FileCodeBox/compare/v2.8.8...v2.8.9) (2026-09-16)
 
 
