@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.11](https://github.com/ayflying/FileCodeBox/compare/v2.8.10...v2.8.11) (2026-09-17)
+
+
+### Bug Fixes
+
+* **p2p:** 单文件上限放开为不限制 + STUN 追加公共兜底；前端 ref 更新到 f50ee4c ([eaca8cc](https://github.com/ayflying/FileCodeBox/commit/eaca8cce5929d18a797d27828e335b46a7bf06c3))
+
 ## [2.8.10](https://github.com/ayflying/FileCodeBox/compare/v2.8.9...v2.8.10) (2026-09-17)
 
 

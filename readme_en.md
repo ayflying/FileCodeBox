@@ -35,7 +35,7 @@ docker run -d --restart unless-stopped \
   --log-opt max-size=10m \
   --log-opt max-file=3 \
   --name filecodebox \
-  ghcr.io/ayflying/filecodebox:2.8.10 # x-release-please-version
+  ghcr.io/ayflying/filecodebox:2.8.11 # x-release-please-version
 ```
 
 Open `http://localhost:12345` and complete first-run setup. Pin a version in production; `latest` tracks the newest stable release.
