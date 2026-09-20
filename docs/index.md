@@ -24,9 +24,12 @@ features:
     title: 即传即取
     details: 文件与文本统一分享，支持批量、分片和断点续传
   - icon: 02
+    title: P2P 直传
+    details: 文件不经服务器，发布零等待，浏览器直连传输全程加密
+  - icon: 03
     title: 灵活失效
     details: 按时间或取件次数失效，也可以永久保留
-  - icon: 03
+  - icon: 04
     title: 数据自主
     details: 支持本地、S3、OneDrive、WebDAV 与 OpenDAL
 ---

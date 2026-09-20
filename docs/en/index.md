@@ -24,9 +24,12 @@ features:
     title: Share instantly
     details: Files and text in one flow, with batch, chunked, and resumable uploads
   - icon: 02
+    title: P2P direct transfer
+    details: Files never touch the server—zero-wait publishing over encrypted browser-to-browser links
+  - icon: 03
     title: Flexible expiry
     details: Expire by time or retrieval count, or keep content permanently
-  - icon: 03
+  - icon: 04
     title: Own your data
     details: Local, S3, OneDrive, WebDAV, and OpenDAL storage
 ---

@@ -34,6 +34,7 @@ export default defineConfig({
             items: [
               { text: '快速开始', link: '/guide/getting-started' },
               { text: '上传与分享', link: '/guide/upload' },
+              { text: 'P2P 直传', link: '/guide/p2p' },
               { text: '管理面板', link: '/guide/management' },
               { text: '存储配置', link: '/guide/storage' },
             ],
@@ -189,6 +190,7 @@ export default defineConfig({
               items: [
                 { text: 'File Upload', link: '/en/guide/upload' },
                 { text: 'File Sharing', link: '/en/guide/share' },
+                { text: 'P2P Direct Transfer', link: '/en/guide/p2p' },
                 { text: 'File Management', link: '/en/guide/management' },
               ],
             },

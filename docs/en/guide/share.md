@@ -13,6 +13,10 @@ FileCodeBox supports two sharing methods:
 1. **Text Sharing** - Share text content directly, suitable for code snippets, configuration files, etc.
 2. **File Sharing** - Upload files for sharing, supports various file formats
 
+::: tip P2P direct transfer
+File sharing also supports a **P2P direct transfer** mode (pre-checked on the upload page): files never touch the server, passcodes appear instantly, and browsers transfer directly. See [P2P Direct Transfer](/en/guide/p2p).
+:::
+
 ## Text Sharing
 
 ### How to Use

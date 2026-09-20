@@ -10,6 +10,10 @@ FileCodeBox provides multiple flexible file upload methods, supporting both regu
 
 FileCodeBox supports the following upload methods:
 
+::: tip P2P direct transfer (on by default)
+The “P2P direct transfer” toggle on the upload page is pre-checked. When checked, files **never touch the server**—the passcode appears instantly on upload, and the publisher's and downloader's browsers transfer directly. Ideal for large files and temporary sharing. See [P2P Direct Transfer](/en/guide/p2p); uncheck it to fall back to the traditional upload flow.
+:::
+
 ### Drag and Drop Upload
 
 Drag files directly to the upload area to start uploading. This is the most convenient upload method.

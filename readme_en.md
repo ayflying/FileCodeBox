@@ -76,6 +76,7 @@ Open `http://localhost:12345` and complete first-run setup. Pin a version in pro
 ## Learn more
 
 - [Getting started](https://ayflying.github.io/FileCodeBox/en/guide/getting-started) · deployment, setup, and upgrades
+- [P2P direct transfer](https://ayflying.github.io/FileCodeBox/en/guide/p2p) · zero-wait, browser-to-browser sharing
 - [Storage](https://ayflying.github.io/FileCodeBox/en/guide/storage) · local and object storage
 - [Security](https://ayflying.github.io/FileCodeBox/en/guide/security) · rate limits, sessions, and access protection
 - [API reference](https://ayflying.github.io/FileCodeBox/en/api/) · upload, retrieval, and administration
